@@ -32,17 +32,10 @@ fun Date.add(value:Int, units: TimeUnits = TimeUnits.SECOND) : Date{
 }
 
 public fun Date.humanizeDiff(date: Date = Date()): String {
-    val timeDifference = (abs(this.time)-abs(date.time) )/1000
-        return when (timeDifference) {
-             in 0..1 -> {
-                "только что"
-            }
-            in 2..45 -> {
-                "через несколько секунд"
-            }
-            in 46..75 -> {
-                "через минуту"
-            }
+    return when (val timeDifference = (abs(this.time)-abs(date.time) )/1000) {
+            in 0..1 -> {"только что"}
+            in 2..45 -> {"через несколько секунд"}
+            in 46..75 -> {"через минуту"}
             in 76..2700 -> {
                 val n = timeDifference/60
                 "через $n ${getDeclinations(n,TimeUnits.MINUTE)}"
@@ -55,36 +48,24 @@ public fun Date.humanizeDiff(date: Date = Date()): String {
                 val n = timeDifference/3600
                 "через $n ${getDeclinations(n,TimeUnits.HOUR)}"
             }
-            in 79201..93600 -> {
-                "через день"
-            }
+            in 79201..93600 -> {"через день"}
             in 93601..31104000 -> {
                 val n = timeDifference/86400
                 "через $n ${getDeclinations(n,TimeUnits.DAY)}"
             }
-            -1L -> {
-                "только что"
-            }
-            in -45..-2 -> {
-                "несколько секунд назад"
-            }
-            in -76..-46 -> {
-                "минуту назад"
-            }
+            -1L -> {"только что"}
+            in -45..-2 -> {"несколько секунд назад"}
+            in -76..-46 -> {"минуту назад"}
             in -2700..-76 -> {
                 val n = timeDifference/60*-1
                 "$n ${getDeclinations(n,TimeUnits.MINUTE)} назад"
             }
-            in -4500..-2701 -> {
-                 "час назад"
-            }
+            in -4500..-2701 -> {"час назад"}
             in -79200..-4500 -> {
                 val n = timeDifference/3600*-1
                     "$n ${getDeclinations(n,TimeUnits.HOUR)} назад"
             }
-            in -93600..-79201 -> {
-                "день назад"
-            }
+            in -93600..-79201 -> {"день назад"}
             in -31104000..-93601 -> {
                 val n = timeDifference/86400*-1
                 "$n ${getDeclinations(n,TimeUnits.DAY)} назад"
@@ -120,12 +101,41 @@ fun getDeclinations(number:Long, unitOfTime:TimeUnits) : String {
     }
 }
 
-
-
-
 enum class TimeUnits{
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+
+    fun plural(value: Int): String {
+        val lastNumber = getLastNumber(value)
+        return when(this.name) {
+            "SECOND" -> when(lastNumber) {
+                1 -> "$value секунду"
+                in 2..4 -> "$value секунды"
+                else -> "$value секунд"
+            }
+            "MINUTE" -> when(lastNumber) {
+                1 -> "$value минуту"
+                in 2..4 -> "$value минуты"
+                else -> "$value минут"
+            }
+            "HOUR" -> when(lastNumber) {
+                1 -> "$value час"
+                in 2..4 -> "$value часа"
+                else -> "$value часов"
+            }
+            else -> when(lastNumber) {
+                1 -> "$value день"
+                in 2..4 -> "$value дня"
+                else -> "$value дней"
+            }
+        }
+    }
+
+    fun getLastNumber(value:Int) : Int {
+        val numberString = value.toString()
+        return numberString[numberString.length-1].toString().toInt()
+    }
+
 }
