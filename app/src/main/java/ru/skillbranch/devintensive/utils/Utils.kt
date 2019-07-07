@@ -23,7 +23,7 @@ object Utils {
         "ш" to "sh", "щ" to "sh'", "ъ" to "", "ы" to "i", "ь" to "", "э" to "e", "ю" to "yu", "я" to "ya")
 
         val parts: List<String> = payload.split(divider)
-        var engParts : MutableList<String> = arrayListOf()
+        val engParts : MutableList<String> = arrayListOf()
         for (part:String in parts)
         {
             var engPart = ""
@@ -46,5 +46,4 @@ object Utils {
         }
         return initials?.toUpperCase()
     }
-
 }
