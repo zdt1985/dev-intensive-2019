@@ -2,10 +2,10 @@ package ru.skillbranch.devintensive.extensions
 
 
 fun String.truncate(i: Int = 16): String? {
-    val truncatedString = this.substring(0, i).trimEnd()
-    return when(i) {
-        in 0..14 -> truncatedString
-        else -> "$truncatedString..."
+    return if(15 > this.length) {
+        this.trim()
+    } else {
+        "${this.substring(0, i).trim()}..."
     }
 }
 

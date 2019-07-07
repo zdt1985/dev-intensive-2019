@@ -12,15 +12,19 @@ fun User.toUserView() : UserView {
 
     val nickName = Utils.transliteration("$firstName $lastName")
     val initials = Utils.toInitials(firstName, lastName)
-//    val status =if(lastVisit == null) "Eще ни разу не был" esle if (isOnline) "online" else "Последний раз был ${lastVisit.humanizeDiff()}"
+    val status = when {
+        lastVisit == null -> "Еще ни разу не был"
+        isOnline -> "online"
+        else -> "Последний раз был ${lastVisit!!.humanizeDiff()}"
+    }
 
     return UserView(
         id,
         fullName = "$firstName $lastName",
-        avatar = avatar ,
-        nickName = nickName ,
-        initials = initials ,
-        status = "" )
+        nickName = nickName,
+        initials = initials,
+        status = status,
+        avatar = avatar )
 }
 
 
