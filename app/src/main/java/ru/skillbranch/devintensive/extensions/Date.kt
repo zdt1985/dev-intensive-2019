@@ -32,8 +32,8 @@ fun Date.add(value:Int, units: TimeUnits = TimeUnits.SECOND) : Date{
 }
 
 public fun Date.humanizeDiff(date: Date = Date()): String {
-    return when (val timeDifference = (abs(this.time)-abs(date.time) )/1000) {
-            in 0..1 -> {"только что"}
+    return when (val timeDifference = (abs(this.time)-abs(date.time) )/SECOND) {
+            in -1..1 -> {"только что"}
             in 2..45 -> {"через несколько секунд"}
             in 46..75 -> {"через минуту"}
             in 76..2700 -> {
@@ -53,7 +53,6 @@ public fun Date.humanizeDiff(date: Date = Date()): String {
                 val n = timeDifference/86400
                 "через $n ${getDeclinations(n,TimeUnits.DAY)}"
             }
-            -1L -> {"только что"}
             in -45..-2 -> {"несколько секунд назад"}
             in -76..-46 -> {"минуту назад"}
             in -2700..-76 -> {
