@@ -17,13 +17,13 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             question = question.nextQuestion()
             "Отлично - ты справился\n${question.question}" to status.color
         } else {
-              if (status == Status.CRITICAL) {
-                  status = Status.NORMAL
-                  question = Question.NAME
-                  "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
+            if (status == Status.CRITICAL) {
+                status = Status.NORMAL
+                question = Question.NAME
+                "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
             } else {
-                  status = status.nextStatus()
-                  "Это неправильный ответ!\n${question.question}" to status.color
+                status = status.nextStatus()
+                "Это неправильный ответ\n${question.question}" to status.color
             }
         }
     }
@@ -45,24 +45,50 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
     enum class Question(val question: String, val answers: List<String>) {
         NAME("Как меня зовут?", listOf("бендер", "bender")) {
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return (!answer.isNullOrBlank() && answer.first().isUpperCase()) to "Имя должно начинаться с заглавной буквы"
+            }
+
             override fun nextQuestion(): Question = PROFESSION
         },
         PROFESSION("Назови мою профессию?", listOf("сгибальщик", "bender")){
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return (!answer.isNullOrBlank() && answer.first().isLowerCase()) to "Профессия должна начинаться со строчной буквы"
+            }
+
             override fun nextQuestion(): Question = MATERIAL
         },
         MATERIAL("Из чего я сделан?", listOf("металл", "дерево", "metal", "iron", "wood")){
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return (answer?.all { it.isLetter() } ?: false) to "Материал не должен содержать цифр"
+            }
+
             override fun nextQuestion(): Question = BDAY
         },
         BDAY("Когда меня создали?", listOf("2993")){
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return (answer?.all { it.isDigit() } ?: false) to "Год моего рождения должен содержать только цифры"
+            }
+
             override fun nextQuestion(): Question = SERIAL
         },
         SERIAL("Мой серийный номер?", listOf("2716057")){
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return (answer?.length == 7 && answer.all { it.isDigit() }) to "Серийный номер содержит только цифры, и их 7"
+            }
+
             override fun nextQuestion(): Question = IDLE
         },
         IDLE("На этом все, вопросов больше нет", listOf()){
-            override fun nextQuestion(): Question = IDLE
+            override fun validation(answer: String?): Pair<Boolean, String> {
+                return true to ""
+            }
+            override fun nextQuestion(): Question {
+                return this
+            }
         };
 
         abstract fun nextQuestion():Question
+        abstract fun validation(answer: String?): Pair<Boolean, String>
     }
 }
