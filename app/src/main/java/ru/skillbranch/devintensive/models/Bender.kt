@@ -80,12 +80,8 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
             override fun nextQuestion(): Question = IDLE
         },
         IDLE("На этом все, вопросов больше нет", listOf()){
-            override fun validation(answer: String?): Pair<Boolean, String> {
-                return true to ""
-            }
-            override fun nextQuestion(): Question {
-                return this
-            }
+            override fun validation(answer: String?): Pair<Boolean, String> = true to ""
+            override fun nextQuestion(): Question = this
         };
 
         abstract fun nextQuestion():Question
