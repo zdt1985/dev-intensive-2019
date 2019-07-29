@@ -159,18 +159,34 @@ class ProfileActivity : AppCompatActivity() {
         invalidWords.add("join")
 
         var isValid = false
-        val verifiable = et_repository.text.toString()
+        var name = et_first_name.text.toString()
+        name = "${name.substring(0, 1).toLowerCase()}${name.substring(1)}${et_last_name.text} "
+        val verifiable = "${et_repository.text.toString()}"
         for (i in validURL) {
-            val regex = Regex(i)
-            if (regex.matches(verifiable)) {
-                for (j in invalidWords) {
-                    val regex2 = Regex(j)
-                    if (!regex2.containsMatchIn(verifiable))
-                        isValid = true
-                    break
+            val regex =Regex(i + name.trim())
+            if (verifiable.matches(regex)) {
+                isValid = true
+                break
+            } else {
+                for (j in validURL) {
+                    val regex2 = Regex(j + name.trim())
+                    if (regex2.containsMatchIn(verifiable)) {
+                        for (k in invalidWords) {
+                            val regex3 = Regex(k)
+                            if (!regex3.containsMatchIn(verifiable))
+                                isValid = true
+                            break
+                        }
+                    }
                 }
-
             }
+        }
+        if (!isValid) {
+            wr_repository.isErrorEnabled = true
+            wr_repository.error = "Невалидный адрес репозитория"
+        } else {
+            wr_repository.isErrorEnabled = false
+            wr_repository.error = null
         }
         return isValid
     }
