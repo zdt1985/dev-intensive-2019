@@ -121,15 +121,57 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun saveProfileInfo() {
+        var validRepository = ""
+        if (isValidRepoURL()) {
+            validRepository = et_repository.text.toString()
+        }
         Profile(
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = et_repository.text.toString(),
+            repository = validRepository,
             nickName = Utils.transliteration("${et_first_name.text} ${et_last_name.text}", "_")
         ).apply {
             viewModel.saveProfileData(this)
         }
     }
 
+    private fun isValidRepoURL(): Boolean {
+        val validURL = ArrayList<String>()
+        validURL.add("https://github.com/")
+        validURL.add("https://www.github.com/")
+        validURL.add("www.github.com/")
+        validURL.add("github.com/")
+
+        val invalidWords = ArrayList<String>()
+        invalidWords.add("enterprise")
+        invalidWords.add("features")
+        invalidWords.add("topics")
+        invalidWords.add("collections")
+        invalidWords.add("trending")
+        invalidWords.add("events")
+        invalidWords.add("marketplace")
+        invalidWords.add("pricing")
+        invalidWords.add("nonprofit")
+        invalidWords.add("customer-stories")
+        invalidWords.add("security")
+        invalidWords.add("login")
+        invalidWords.add("join")
+
+        var isValid = false
+        val verifiable = et_repository.text.toString()
+        for (i in validURL) {
+            val regex = Regex(i)
+            if (regex.matches(verifiable)) {
+                for (j in invalidWords) {
+                    val regex2 = Regex(j)
+                    if (!regex2.containsMatchIn(verifiable))
+                        isValid = true
+                    break
+                }
+
+            }
+        }
+        return isValid
+    }
 }
