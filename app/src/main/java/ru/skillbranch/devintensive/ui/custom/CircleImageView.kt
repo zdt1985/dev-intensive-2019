@@ -31,21 +31,20 @@ class CircleImageView @JvmOverloads constructor(
         }
     }
 
-    @Dimension
-    private fun getBorderWidth():Int = borderWidth
+    fun getBorderWidth():Int = borderWidth
 
-    private fun setBorderWidth(@Dimension dp:Int) {
+    fun setBorderWidth(@Dimension dp:Int) {
         borderWidth = dp
         this.invalidate()
     }
 
-    private fun getBorderColor():Int = borderColor
+    fun getBorderColor():Int = borderColor
 
-    private fun setBorderColor(hex:String) {
+    fun setBorderColor(hex:String) {
         borderColor = Color.parseColor(hex)
         this.invalidate()
     }
-    private fun setBorderColor(@ColorRes colorId: Int) {
+    fun setBorderColor(@ColorRes colorId: Int) {
         borderColor = ContextCompat.getColor(App.applicationContext(), colorId)
         this.invalidate()
     }
