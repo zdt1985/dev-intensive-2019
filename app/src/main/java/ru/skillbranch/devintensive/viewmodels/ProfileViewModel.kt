@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.repositories.PreferencesRepository
 
@@ -44,36 +43,18 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun isValidRepoURL(verifiable: String): Boolean {
-        val invalidWords = ArrayList<String>()
-        invalidWords.add("enterprise")
-        invalidWords.add("features")
-        invalidWords.add("topics")
-        invalidWords.add("collections")
-        invalidWords.add("trending")
-        invalidWords.add("events")
-        invalidWords.add("marketplace")
-        invalidWords.add("pricing")
-        invalidWords.add("nonprofit")
-        invalidWords.add("customer-stories")
-        invalidWords.add("security")
-        invalidWords.add("login")
-        invalidWords.add("join")
-
-
-        var isValid = true
-
-        val regex = Regex("(https://)?(www.)?github.com/([\'w'-]*[^/])")
-        if (regex.matches(verifiable)) {
-//            for (i in invalidWords) {
-//                val regex3 = Regex(i)
-//                if (!regex3.containsMatchIn(verifiable)) {
-//                    isValid = false
-//                    break
-//                }
-//            }
-        } else {
-            isValid = false
-        }
-        return isValid
+        val pattern = "^(?:https://)?(?:www.)?(?:github.com/)[^/|\\\\s]+(?<!${getRegexExceptions()})(?:/)?\$"
+        val regex = Regex(pattern)
+        return regex.matches(verifiable)
     }
+
+    private fun getRegexExceptions(): String {
+        val extensions = arrayOf("enterprise", "features", "topics",
+            "collections", "trending", "events", "marketplace",
+            "pricing", "nonprofit", "customer-stories",
+            "security", "login", "join"
+        )
+        return extensions.joinToString("|\\b","\\b")
+    }
+
 }

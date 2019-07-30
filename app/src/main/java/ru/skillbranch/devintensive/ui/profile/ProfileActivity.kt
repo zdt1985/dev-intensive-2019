@@ -85,7 +85,6 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showCurrentMode(isEdit: Boolean) {
         val info = viewFields.filter { setOf("firstName", "lastName", "about", "repository").contains(it.key) }
         for ((_, v) in info) {
@@ -121,9 +120,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun saveProfileInfo() {
-        var validRepository = ""
-        if (viewModel.isValidRepoURL(et_repository.text.toString())) {
-            validRepository = et_repository.text.toString()
+        var validRepository = et_repository.text.toString()
+        if (validRepository.isNotBlank() && !viewModel.isValidRepoURL(validRepository)) {
+            validRepository = ""
             printRepoError()
         }
         Profile(
@@ -140,6 +139,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun printRepoError() {
         wr_repository.isErrorEnabled = true
         wr_repository.error = "Невалидный адрес репозитория"
+        et_repository.text.clear()
     }
 }
 
