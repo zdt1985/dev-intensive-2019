@@ -24,7 +24,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ProfileViewModel
     var isEditMode = false
-    lateinit var viewFields : Map<String, TextView>
+    lateinit var viewFields: Map<String, TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -32,7 +32,7 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
         initViews(savedInstanceState)
         initViewModel()
-        Log.d("M_ProfileActivity","onCreate")
+        Log.d("M_ProfileActivity", "onCreate")
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -47,7 +47,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateTheme(mode: Int) {
-        Log.d("M_ProfileActivity","updateTheme")
+        Log.d("M_ProfileActivity", "updateTheme")
         delegate.setLocalNightMode(mode)
     }
 
@@ -74,21 +74,21 @@ class ProfileActivity : AppCompatActivity() {
         isEditMode = savedInstanceState?.getBoolean(IS_EDIT_MODE, false) ?: false
         showCurrentMode(isEditMode)
 
-        btn_edit.setOnClickListener{
-            if(isEditMode) saveProfileInfo()
+        btn_edit.setOnClickListener {
+            if (isEditMode) saveProfileInfo()
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
-        }
 
-        btn_switch_theme.setOnClickListener{
-            viewModel.switchTheme()
+            btn_switch_theme.setOnClickListener {
+                viewModel.switchTheme()
+            }
         }
     }
 
 
     private fun showCurrentMode(isEdit: Boolean) {
-        val info = viewFields.filter { setOf("firstName","lastName","about","repository").contains(it.key) }
-        for ((_,v) in info) {
+        val info = viewFields.filter { setOf("firstName", "lastName", "about", "repository").contains(it.key) }
+        for ((_, v) in info) {
             v as EditText
             v.isFocusable = isEdit
             v.isFocusableInTouchMode = isEdit
@@ -99,19 +99,19 @@ class ProfileActivity : AppCompatActivity() {
         ic_eye.visibility = if (isEdit) View.GONE else View.VISIBLE
         wr_about.isCounterEnabled = isEdit
 
-        with(btn_edit){
-            val filter: ColorFilter? = if(isEdit){
+        with(btn_edit) {
+            val filter: ColorFilter? = if (isEdit) {
                 PorterDuffColorFilter(
                     resources.getColor(R.color.color_accent, theme),
                     PorterDuff.Mode.SRC_IN
                 )
-            }else{
+            } else {
                 null
             }
 
-            val icon = if (isEdit){
+            val icon = if (isEdit) {
                 resources.getDrawable(R.drawable.ic_save_black_24dp, theme)
-            }else{
+            } else {
                 resources.getDrawable(R.drawable.ic_edit_black_24dp, theme)
             }
 
@@ -122,8 +122,9 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun saveProfileInfo() {
         var validRepository = ""
-        if (isValidRepoURL()) {
+        if (viewModel.isValidRepoURL(et_repository.text.toString())) {
             validRepository = et_repository.text.toString()
+            printRepoError()
         }
         Profile(
             firstName = et_first_name.text.toString(),
@@ -136,58 +137,11 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun isValidRepoURL(): Boolean {
-        val validURL = ArrayList<String>()
-        validURL.add("https://github.com/")
-        validURL.add("https://www.github.com/")
-        validURL.add("www.github.com/")
-        validURL.add("github.com/")
-
-        val invalidWords = ArrayList<String>()
-        invalidWords.add("enterprise")
-        invalidWords.add("features")
-        invalidWords.add("topics")
-        invalidWords.add("collections")
-        invalidWords.add("trending")
-        invalidWords.add("events")
-        invalidWords.add("marketplace")
-        invalidWords.add("pricing")
-        invalidWords.add("nonprofit")
-        invalidWords.add("customer-stories")
-        invalidWords.add("security")
-        invalidWords.add("login")
-        invalidWords.add("join")
-
-        var isValid = false
-        var name = et_first_name.text.toString()
-        name = "${name.substring(0, 1).toLowerCase()}${name.substring(1)}${et_last_name.text} "
-        val verifiable = "${et_repository.text.toString()}"
-        for (i in validURL) {
-            val regex =Regex(i + name.trim())
-            if (verifiable.matches(regex)) {
-                isValid = true
-                break
-            } else {
-                for (j in validURL) {
-                    val regex2 = Regex(j + name.trim())
-                    if (regex2.containsMatchIn(verifiable)) {
-                        for (k in invalidWords) {
-                            val regex3 = Regex(k)
-                            if (!regex3.containsMatchIn(verifiable))
-                                isValid = true
-                            break
-                        }
-                    }
-                }
-            }
-        }
-        if (!isValid) {
-            wr_repository.isErrorEnabled = true
-            wr_repository.error = "Невалидный адрес репозитория"
-        } else {
-            wr_repository.isErrorEnabled = false
-            wr_repository.error = null
-        }
-        return isValid
+    private fun printRepoError() {
+        wr_repository.isErrorEnabled = true
+        wr_repository.error = "Невалидный адрес репозитория"
     }
 }
+
+
+
