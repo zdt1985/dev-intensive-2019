@@ -145,7 +145,6 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun updateRepository(isError: Boolean) {
         if (isError) et_repository.text.clear()
     }

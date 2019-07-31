@@ -48,7 +48,6 @@ class ProfileViewModel : ViewModel() {
         repository.saveAppTheme(appTheme.value!!)
     }
 
-
     fun onRepositoryChanged(repository: String) {
         repositoryError.value = isValidRepoURL(repository)
     }
