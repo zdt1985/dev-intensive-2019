@@ -43,7 +43,7 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun isValidRepoURL(verifiable: String): Boolean {
-        val pattern = "^(?:https://)?(?:www.)?(?:github.com/)[^/|\\\\s]+(?<!${getRegexExceptions()})(?:/)?\$"
+        val pattern = "^(?:https://)?(?:www.)?(?:github.com/)[^/|\\s]+(?<!${getRegexExceptions()})(?:/)?$"
         val regex = Regex(pattern)
         return regex.matches(verifiable)
     }

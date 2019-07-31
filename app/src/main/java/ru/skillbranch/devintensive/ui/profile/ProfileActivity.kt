@@ -78,10 +78,10 @@ class ProfileActivity : AppCompatActivity() {
             if (isEditMode) saveProfileInfo()
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
+        }
 
-            btn_switch_theme.setOnClickListener {
-                viewModel.switchTheme()
-            }
+        btn_switch_theme.setOnClickListener {
+            viewModel.switchTheme()
         }
     }
 
