@@ -61,6 +61,7 @@ class ProfileActivity : AppCompatActivity() {
                 v.text = it[k].toString()
             }
         }
+        updateAvatar(profile)
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -152,6 +153,12 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateRepoError(isError: Boolean) {
         wr_repository.isErrorEnabled = isError
         wr_repository.error = if (isError) "Невалидный адрес репозитория" else null
+    }
+
+    private fun updateAvatar(profile: Profile) {
+        val initials = Utils.toInitials(profile.firstName, profile.lastName)
+        iv_avatar.generateAvatar(initials, Utils.convertSpToPx(this, 48), theme)
+
     }
 }
 
