@@ -139,8 +139,7 @@ class ProfileActivity : AppCompatActivity() {
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = et_repository.text.toString(),
-            nickName = Utils.transliteration("${et_first_name.text} ${et_last_name.text}", "_")
+            repository = et_repository.text.toString()
         ).apply {
             viewModel.saveProfileData(this)
         }
