@@ -47,12 +47,21 @@ object Utils {
     }
 
     fun toInitials(firstName: String?, lastName: String?): String? {
-    val initials = when {
-        !firstName.isNullOrBlank() && !lastName.isNullOrBlank() -> "${firstName.first()}${lastName.first()}"
-        firstName.isNullOrBlank()  -> if (!lastName.isNullOrBlank()) {"${lastName.first().toString()}"} else null
-        else -> firstName.first().toString()
+        val result: String
+        var firstSymbol = ""
+        var lastSymbol = ""
+        if (!firstName.isNullOrEmpty() && !firstName.isNullOrBlank()) {
+            firstSymbol = firstName.substring(0, 1).toUpperCase()
         }
-        return initials?.toUpperCase()
+        if (!lastName.isNullOrEmpty() && !lastName.isNullOrBlank()) {
+            lastSymbol = lastName.substring(0, 1).toUpperCase()
+        }
+        result = firstSymbol + lastSymbol
+        if (result == "") {
+            return null
+        } else {
+            return result
+        }
     }
 
     fun convertDpToPx(context: Context, dp: Int): Int {
