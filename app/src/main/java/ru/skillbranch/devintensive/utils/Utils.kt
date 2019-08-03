@@ -47,34 +47,22 @@ object Utils {
     }
 
     fun toInitials(firstName: String?, lastName: String?): String? {
-        val result: String
-        var firstSymbol = ""
-        var lastSymbol = ""
-        if (!firstName.isNullOrEmpty() && !firstName.isNullOrBlank()) {
-            firstSymbol = firstName.substring(0, 1).toUpperCase()
-        }
-        if (!lastName.isNullOrEmpty() && !lastName.isNullOrBlank()) {
-            lastSymbol = lastName.substring(0, 1).toUpperCase()
-        }
-        result = firstSymbol + lastSymbol
-        if (result == "") {
-            return null
-        } else {
-            return result
-        }
+        val name = firstName.orEmpty().trim().getOrNull(0)?.toUpperCase()
+        val surname = lastName.orEmpty().trim().getOrNull(0)?.toUpperCase()
+        val firstInit = name?.toString() ?: ""
+        val secondInit = surname?.toString() ?: ""
+        return "$firstInit$secondInit".ifEmpty { null }
     }
-
-    fun convertDpToPx(context: Context, dp: Int): Int {
-        val scale = context.resources.displayMetrics.density
-        return (dp * scale + 0.5f).toInt()
-    }
-
 
     fun convertPxToDp(context: Context, px: Int): Int {
         val scale = context.resources.displayMetrics.density
         return (px / scale + 0.5f).toInt()
     }
 
+    fun convertDpToPx(context: Context, dp: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
 
     fun convertSpToPx(context: Context, sp: Int): Int {
         return sp * context.resources.displayMetrics.scaledDensity.toInt()
