@@ -16,7 +16,6 @@ import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.utils.Utils
 import kotlin.math.min
 
-
 class CircleImageView @JvmOverloads constructor (
     context: Context,
     attrs: AttributeSet? = null,
@@ -29,6 +28,7 @@ class CircleImageView @JvmOverloads constructor (
     private var borderColor = DEFAULT_BORDER_COLOR
     private var borderWidth = Utils.convertDpToPx(context, 2)
     private var text: String? = null
+    private var bitmap: Bitmap? = null
 
     init {
         if (attrs != null) {
@@ -58,36 +58,38 @@ class CircleImageView @JvmOverloads constructor (
         this.invalidate()
     }
 
-     override fun onDraw(canvas: Canvas) {
-         var bitmap = getBitmapFromDrawable() ?: return
-         if (width == 0 || height == 0) return
+    override fun onDraw(canvas: Canvas) {
+        var bitmap = getBitmapFromDrawable() ?: return
+        if (width == 0 || height == 0) return
 
-         bitmap = getScaledBitmap(bitmap, width)
-         bitmap = getCenterCroppedBitmap(bitmap, width)
-         bitmap = getCircleBitmap(bitmap)
+        bitmap = getScaledBitmap(bitmap, width)
+        bitmap = getCenterCroppedBitmap(bitmap, width)
+        bitmap = getCircleBitmap(bitmap)
 
-         if (borderWidth > 0)
-             bitmap = getStrokedBitmap(bitmap, borderWidth, borderColor)
+        if (borderWidth > 0)
+            bitmap = getStrokedBitmap(bitmap, borderWidth, borderColor)
 
-         canvas.drawBitmap(bitmap, 0F, 0F, null)
+        canvas.drawBitmap(bitmap, 0F, 0F, null)
     }
 
     fun generateAvatar(text: String?, sizeSp: Int, theme: Resources.Theme){
         /* don't render if initials haven't changed */
-        if (text != this.text){
+        if (bitmap == null || text != this.text){
             val image =
                 if (text == null) {
-                    generateDefAvatar(theme)
+                    getDefaultAvatar(theme)
                 }
-                else generateLetterAvatar(text, sizeSp, theme)
+                else getInitials(text, sizeSp, theme)
 
             this.text = text
-            setImageBitmap(image)
+            bitmap = image
+            setImageBitmap(bitmap)
+            invalidate()
         }
     }
 
-    private fun generateLetterAvatar(text: String, sizeSp: Int, theme: Resources.Theme): Bitmap {
-        val image = generateDefAvatar(theme)
+    private fun getInitials(text: String, sizeSp: Int, theme: Resources.Theme): Bitmap {
+        val image = getDefaultAvatar(theme)
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = sizeSp.toFloat()
@@ -107,11 +109,10 @@ class CircleImageView @JvmOverloads constructor (
         return image
     }
 
-    private fun generateDefAvatar(theme: Resources.Theme): Bitmap {
+    private fun getDefaultAvatar(theme: Resources.Theme): Bitmap {
         val image = Bitmap.createBitmap(layoutParams.height, layoutParams.height, Config.ARGB_8888)
         val color = TypedValue()
         theme.resolveAttribute(R.attr.colorAccent, color, true)
-
 
         val canvas = Canvas(image)
         canvas.drawColor(color.data)
@@ -153,6 +154,9 @@ class CircleImageView @JvmOverloads constructor (
     }
 
     private fun getBitmapFromDrawable(): Bitmap? {
+        if (bitmap != null)
+            return bitmap
+
         if (drawable == null)
             return null
 
@@ -187,5 +191,3 @@ class CircleImageView @JvmOverloads constructor (
         return outputBmp
     }
 }
-
-

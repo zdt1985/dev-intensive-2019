@@ -1,14 +1,16 @@
 package ru.skillbranch.devintensive.viewmodels
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.repositories.PreferencesRepository
+import ru.skillbranch.devintensive.utils.Utils
 
-class ProfileViewModel: ViewModel() {
+
+class ProfileViewModel : ViewModel() {
     private val repository: PreferencesRepository = PreferencesRepository
     private val profileData = MutableLiveData<Profile>()
     private val appTheme = MutableLiveData<Int>()
@@ -16,58 +18,49 @@ class ProfileViewModel: ViewModel() {
     private val isRepoError = MutableLiveData<Boolean>()
 
     init {
+        Log.d("M_ProfileViewModel", "init view model")
         profileData.value = repository.getProfile()
         appTheme.value = repository.getAppTheme()
     }
 
-    fun getIsRepoError():LiveData<Boolean> = isRepoError
-
-    fun getProfileData(): LiveData<Profile>{
-        return profileData
+    override fun onCleared() {
+        super.onCleared()
     }
 
-        fun getTheme(): LiveData<Int> = appTheme
+    fun getProfileData(): LiveData<Profile> = profileData
 
-        fun getRepositoryError(): LiveData<Boolean> = repositoryError
+    fun getTheme(): LiveData<Int> = appTheme
 
-        fun saveProfileData(profile: Profile) {
-            repository.saveProfile(profile)
-            profileData.value = profile
+    fun getRepositoryError(): LiveData<Boolean> = repositoryError
+
+    fun getIsRepoError(): LiveData<Boolean> = isRepoError
+
+    fun saveProfileData(profile: Profile) {
+        repository.saveProfile(profile)
+        profileData.value = profile
+    }
+
+    fun switchTheme() {
+        if (appTheme.value == AppCompatDelegate.MODE_NIGHT_YES) {
+            appTheme.value = AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            appTheme.value = AppCompatDelegate.MODE_NIGHT_YES
         }
+        repository.saveAppTheme(appTheme.value!!)
+    }
 
-        override fun onCleared() {
-            super.onCleared()
-        }
+    fun onRepositoryChanged(repository: String) {
+        repositoryError.value = !isValidateRepository(repository)
+    }
 
-        fun switchTheme() {
-            if (appTheme.value == AppCompatDelegate.MODE_NIGHT_YES)
-                appTheme.value = AppCompatDelegate.MODE_NIGHT_NO
-            else appTheme.value = AppCompatDelegate.MODE_NIGHT_YES
+    fun onRepoEditCompleted(isError: Boolean) {
+        isRepoError.value = isError
+    }
 
-            repository.saveAppTheme(appTheme.value!!)
-        }
-
-        fun onRepositoryChanged(repository: String) {
-            repositoryError.value = isValidateRepository(repository)
-        }
+    private fun isValidateRepository(repo: String): Boolean {
+        return Utils.isValidateRepository(repo)
+    }
 
 
-        fun onRepoEditCompleted(isError: Boolean) {
-            isRepoError.value = isError
-        }
 
-        private fun isValidateRepository(repoText: String): Boolean {
-            val regexStr = "^(https:\\/\\/)?(www\\.)?(github\\.com\\/)(?!(${getRegexExceptions()})(?=\\/|\$))[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}(\\/)?$"
-            val regex = Regex(regexStr)
-
-            return (repoText.isNotEmpty() && !regex.matches(repoText))
-        }
-
-        private fun getRegexExceptions(): String {
-            val exceptions = arrayOf(
-                "enterprise", "features", "topics", "collections", "trending", "events", "marketplace", "pricing",
-                "nonprofit", "customer-stories", "security", "login", "join"
-            )
-            return exceptions.joinToString("|")
-        }
 }
