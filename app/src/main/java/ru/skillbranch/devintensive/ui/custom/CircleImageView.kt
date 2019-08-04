@@ -58,18 +58,18 @@ class CircleImageView @JvmOverloads constructor (
         this.invalidate()
     }
 
-    override fun onDraw(canvas: Canvas) {
-        var bitmap = getBitmapFromDrawable() ?: return
-        if (width == 0 || height == 0) return
+     override fun onDraw(canvas: Canvas) {
+         var bitmap = getBitmapFromDrawable() ?: return
+         if (width == 0 || height == 0) return
 
-        bitmap = getScaledBitmap(bitmap, width)
-        bitmap = getCenterCroppedBitmap(bitmap, width)
-        bitmap = getCircleBitmap(bitmap)
+         bitmap = getScaledBitmap(bitmap, width)
+         bitmap = getCenterCroppedBitmap(bitmap, width)
+         bitmap = getCircleBitmap(bitmap)
 
-        if (borderWidth > 0)
-            bitmap = getStrokedBitmap(bitmap, borderWidth, borderColor)
+         if (borderWidth > 0)
+             bitmap = getStrokedBitmap(bitmap, borderWidth, borderColor)
 
-        canvas.drawBitmap(bitmap, 0F, 0F, null)
+         canvas.drawBitmap(bitmap, 0F, 0F, null)
     }
 
     fun generateAvatar(text: String?, sizeSp: Int, theme: Resources.Theme){
@@ -187,3 +187,5 @@ class CircleImageView @JvmOverloads constructor (
         return outputBmp
     }
 }
+
+

@@ -1,15 +1,12 @@
 package ru.skillbranch.devintensive.extensions
 
-
-fun String.truncate(i: Int = 16): String? {
-    return if(15 > this.length) {
-        this.trim()
-    } else {
-        "${this.substring(0, i).trim()}..."
-    }
+fun String.truncate(length: Int = 16): String{
+    val trimmedMes = this.trim()
+    return if (trimmedMes.length <= length) trimmedMes else trimmedMes.substring(0, length).trim() + "..."
 }
 
-fun String.stripHtml(): String {
-    return this.replace(Regex("<[^<]*?>|&(.)+;"),"").
-        replace(Regex("[^\\S\\r\\n]+")," ")
+fun String.stripHtml(): String{
+    val htmlRegex = Regex("(<.*?>)|(&[^ а-я]{1,4}?;)")
+    val spaceRegex = Regex(" {2,}")
+    return this.replace(htmlRegex, "").replace(spaceRegex, " ")
 }
