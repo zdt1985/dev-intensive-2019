@@ -60,7 +60,4 @@ class ProfileViewModel : ViewModel() {
     private fun isValidateRepository(repo: String): Boolean {
         return Utils.isValidateRepository(repo)
     }
-
-
-
 }

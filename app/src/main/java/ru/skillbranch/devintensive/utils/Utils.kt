@@ -81,20 +81,19 @@ object Utils {
         return sp * context.resources.displayMetrics.scaledDensity.toInt()
     }
 
- /*   fun isGithubNotValidUrl(repo: String): Boolean{
-        val regexStr = "^(https://)?(www.)?(github.com/)(?!(${getRegexExceptions()})(?=/|\\\$))(?![\\\\W])(?!\\\\w+[-]{2})[a-zA-Z0-9-]+(?<![-])(/)?\$"
-        val regex = Regex(regexStr)
-        return (repo.isNotEmpty() && !regex.matches(repo))
-    }
-
-    private fun getRegexExceptions(): String {
-        val exceptions = arrayOf(
-            "enterprise", "features", "topics", "collections",
-            "trending", "events", "marketplace", "pricing", "nonprofit",
-            "customer-stories", "security", "login", "join"
-        )
-        return exceptions.joinToString("|\\b", "\\b")
-    }*/
+    /*   fun isGithubNotValidUrl(repo: String): Boolean{
+           val regexStr = "^(https://)?(www.)?(github.com/)(?!(${getRegexExceptions()})(?=/|\\\$))(?![\\\\W])(?!\\\\w+[-]{2})[a-zA-Z0-9-]+(?<![-])(/)?\$"
+           val regex = Regex(regexStr)
+           return (repo.isNotEmpty() && !regex.matches(repo))
+       }
+       private fun getRegexExceptions(): String {
+           val exceptions = arrayOf(
+               "enterprise", "features", "topics", "collections",
+               "trending", "events", "marketplace", "pricing", "nonprofit",
+               "customer-stories", "security", "login", "join"
+           )
+           return exceptions.joinToString("|\\b", "\\b")
+       }*/
 
     fun isValidateRepository(repo: String): Boolean = repo.isEmpty() || repo.matches(
         Regex("^(https://){0,1}(www.){0,1}github.com\\/[A-z\\d](?:[A-z\\d]|(_|-)(?=[A-z\\d])){0,256}(/)?\$",RegexOption.IGNORE_CASE)) &&
