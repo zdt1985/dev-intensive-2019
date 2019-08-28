@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import ru.skillbranch.devintensive.models.data.User
+
 /**
  * Created by Denis on 03.07.2019.
  */
